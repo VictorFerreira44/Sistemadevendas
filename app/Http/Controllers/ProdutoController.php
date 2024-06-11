@@ -6,6 +6,27 @@ use Illuminate\Http\Request;
 use app\Models\Produto; //injeção de dependencias
 
 class ProdutoController extends Controller
+{       
+    private $produto
+
+    public function __construct(Produto $produto)
+    {
+        $this->produto = $produto;
+    }
+}
+    //crias produto
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'required|string',
+            'preco' => 'required|numeric|min:0',
+            'categoria_id' => 'required|integer|exists:categoria_id',
+        ]);
+        $produto = $this->produto->create($validatedData);
+
+        return redirect()->route('produto.index')->with('success', 'produto criado com sucesso!')
+    }
 {
     //Listar produtos
     public function index()
